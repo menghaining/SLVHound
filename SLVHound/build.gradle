@@ -1,0 +1,42 @@
+plugins {
+    // Apply the java-library plugin to add support for Java Library
+    id 'java-library'
+}
+
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    mavenLocal()
+    jcenter() 
+    
+}
+
+
+dependencies {
+	def buildFileDir = project.file('.').absolutePath
+	def walaJarsDir = "${buildFileDir}/local-wala-jars"
+    implementation fileTree(dir: walaJarsDir, include: ['*.jar'])
+	
+    implementation 'com.alibaba:fastjson:1.2.83'
+	implementation group: 'org.slf4j', name: 'slf4j-api'
+	implementation group: 'org.smali', name: 'dexlib2', version: '2.4.0'
+	
+	// https://mvnrepository.com/artifact/org.javassist/javassist
+	compile group: 'org.javassist', name: 'javassist', version: '3.27.0-GA'
+	// https://mvnrepository.com/artifact/commons-cli/commons-cli
+	implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	// https://mvnrepository.com/artifact/dom4j/dom4j
+	implementation group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	 // This dependency is exported to consumers, that is to say found on their compile classpath.
+    api 'org.apache.commons:commons-math3:3.6.1'
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:28.0-jre'
+     // https://mvnrepository.com/artifact/org.json/json
+	implementation group: 'org.json', name: 'json', version: '20201115'
+	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+	// https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.io
+	implementation group: 'org.apache.directory.studio', name: 'org.apache.commons.io', version: '2.4'
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.11'
+}

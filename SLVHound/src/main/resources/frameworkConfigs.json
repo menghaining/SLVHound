@@ -1,0 +1,352 @@
+[
+	{
+		"operation": "field_Inject",
+		"type": "anno",
+		"config1": "javax.inject.Inject",
+		"config2": ""
+	},
+	{
+		"operation": "field_Inject",
+		"type": "anno",
+		"config1": "javax.annotation.Resource",
+		"config2": ""
+	},
+	{
+		"operation": "field_Inject",
+		"type": "anno",
+		"config1": "org.springframework.beans.factory.annotation.Autowired",
+		"config2": "org.springframework.beans.factory.annotation.Qualifier"
+	},
+	{
+		"operation": "field_Inject",
+		"type": "anno",
+		"config1": "org.springframework.beans.factory.annotation.Value",
+		"config2": ""
+	},
+	{
+		"operation": "field_Inject",
+		"type": "anno",
+		"config1": "net.sourceforge.stripes.integration.spring.SpringBean",
+		"config2": ""
+	},
+	{
+		"operation": "field_Inject",
+		"type": "xml",
+		"config1": "/beans/bean/property@name",
+		"config2": "/beans/bean/property@ref"
+	},
+	{
+		"operation": "field_Inject",
+		"type": "xml",
+		"config1": "/beans/bean/property/bean/property@name",
+		"config2": "/beans/bean/property/bean/property@ref"
+	},
+	{
+		"operation": "field_Inject",
+		"type": "xml",
+		"config1": "/struts/package/action/param@name",
+		"config2": ""
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "com.corundumstudio.socketio.annotation.OnConnect"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "com.corundumstudio.socketio.annotation.OnEvent"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "io.swagger.annotations.ApiOperation"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.apache.struts2.convention.annotation.Action"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RequestMapping",
+		"config2": "org.springframework.web.bind.annotation.PostMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RestController",
+		"config2": "org.springframework.web.bind.annotation.PostMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.context.event.EventListener"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RequestMapping",
+		"config2": "org.springframework.web.bind.annotation.GetMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RestController",
+		"config2": "org.springframework.web.bind.annotation.ModelAttribute"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "javax.annotation.PostConstruct"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.ModelAttribute"
+	},
+	{
+		"operation": "entry_point",
+		"type": "xml",
+		"config1": "",
+		"config2": "/beans:beans/beans:bean/@factory-method"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Component",
+		"config2": "org.springframework.scheduling.annotation.Async"
+	},
+	{
+		"operation": "entry_point",
+		"type": "xml",
+		"config1": "",
+		"config2": "/struts/package/action/@method"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RequestMapping",
+		"config2": "org.springframework.web.bind.annotation.InitBinder"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.aspectj.lang.annotation.Aspect",
+		"config2": "org.aspectj.lang.annotation.Around"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.web.bind.annotation.ResponseBody"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RestController",
+		"config2": "org.springframework.web.bind.annotation.ExceptionHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Component",
+		"config2": "org.aspectj.lang.annotation.Around"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.GetMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RequestMapping",
+		"config2": "org.springframework.web.bind.annotation.RequestMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "xml",
+		"config1": "/struts/package/action/@class",
+		"config2": "/struts/package/action/@method"
+	},
+	{
+		"operation": "entry_point",
+		"type": "xml",
+		"config1": "/struts/package/action/@class",
+		"config2": "/struts/package/action/allowed-methods"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "/struts/package/interceptors/interceptor/@class",
+		"config2": "com.opensymphony.xwork2.inject.Inject"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Component",
+		"config2": "javax.annotation.PostConstruct"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RestController",
+		"config2": "org.springframework.web.bind.annotation.GetMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.ControllerAdvice",
+		"config2": "org.springframework.web.bind.annotation.ExceptionHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.context.annotation.Bean"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.web.bind.annotation.PostMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.context.annotation.Configuration",
+		"config2": "org.springframework.context.annotation.Bean"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Component",
+		"config2": "org.springframework.scheduling.annotation.Scheduled"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.PostMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "xml",
+		"config1": "/beans/bean/@class",
+		"config2": "/beans/bean/@destroy-method"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "net.sourceforge.stripes.action.DefaultHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "javax.annotation.PostConstruct"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.ExceptionHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RequestMapping",
+		"config2": "org.springframework.web.bind.annotation.ModelAttribute"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.web.bind.annotation.ExceptionHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Component",
+		"config2": "org.springframework.context.event.EventListener"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RestControllerAdvice",
+		"config2": "org.springframework.web.bind.annotation.ExceptionHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.security.config.annotation.web.configuration.EnableWebSecurity",
+		"config2": "org.springframework.context.annotation.Bean"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.ResponseBody"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.scheduling.annotation.Scheduled"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.web.bind.annotation.RequestMapping",
+		"config2": "org.springframework.web.bind.annotation.ExceptionHandler"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.RequestMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.web.bind.annotation.InitBinder"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "org.springframework.stereotype.Controller",
+		"config2": "org.springframework.web.bind.annotation.InitBinder"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.beans.factory.annotation.Value"
+	}
+	
+	,
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.web.bind.annotation.DeleteMapping"
+	},
+	{
+		"operation": "entry_point",
+		"type": "anno",
+		"config1": "",
+		"config2": "org.springframework.web.bind.annotation.PutMapping"
+	}
+]
