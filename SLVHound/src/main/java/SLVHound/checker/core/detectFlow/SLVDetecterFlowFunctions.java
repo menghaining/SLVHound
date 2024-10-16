@@ -33,13 +33,6 @@ public class SLVDetecterFlowFunctions
 			public IntSet getTargets(int d1) {
 				MutableSparseIntSet result = MutableSparseIntSet.makeEmpty();
 				result.add(d1);
-//				if (src.getNode().equals(manager.ASOEntry) && dest.isExitBlock()
-//						&& domain.getMappedObject(d1).type.equals(AuthDomainType.expire)) {
-//					AuthDomainElement ele = new AuthDomainElement(src.getNode(), null, AuthDomainType.exit);
-//					int d = domain.add(ele);
-//					result.add(d);
-//				}
-
 				return result;
 			}
 

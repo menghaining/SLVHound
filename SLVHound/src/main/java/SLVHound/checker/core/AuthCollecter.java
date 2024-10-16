@@ -19,7 +19,9 @@ import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.annotations.Annotation;
 
-public class LoginCollecter {
+public class AuthCollecter {
+	static HashSet<CGNode> loginMtds = new HashSet<>();
+	static HashSet<CGNode> filterNodes = new HashSet<>();
 
 	/**
 	 * return all candidate login and filter methods</br>
@@ -27,7 +29,7 @@ public class LoginCollecter {
 	 * @param loginMtds   records candidate login methods
 	 * @param filterNodes records candidate filter methods
 	 */
-	public static void collectLoginsAndFilters(HashSet<CGNode> loginMtds, HashSet<CGNode> filterNodes, CallGraph cg) {
+	public static void collectLoginsAndFilters(CallGraph cg) {
 		int login = 0, filter = 0;
 		HashSet<String> entrySigs = new HashSet<>();
 		cg.getEntrypointNodes().forEach(node -> {
@@ -119,14 +121,23 @@ public class LoginCollecter {
 	}
 
 	private static boolean loginMethod(IMethod mtd) {
-		String mtdName = mtd.getName().toString();
 
 		// 1. common login function
-		if (mayLoginMethod(mtd)) {
+		if (mayCustomLoginMethod(mtd)) {
 			return true;
 		}
 
+		// 2. may framework
+		if (mayFrameworkLogin(mtd)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean mayFrameworkLogin(IMethod mtd) {
 		// extends or implements framework API
+		String mtdName = mtd.getName().toString();
 		boolean mayFrameworkImpl = false;
 		if (!((BytecodeClass<?>) mtd.getDeclaringClass()).getAllInterfaceNames().isEmpty())
 			mayFrameworkImpl = true;
@@ -167,7 +178,7 @@ public class LoginCollecter {
 		return openai_login(mtd);
 	}
 
-	private static boolean mayLoginMethod(IMethod mtd) {
+	private static boolean mayCustomLoginMethod(IMethod mtd) {
 		if (mtd.getName().toString().toLowerCase().startsWith("update")
 				|| mtd.getName().toString().toLowerCase().startsWith("set")
 				|| mtd.getName().toString().toLowerCase().startsWith("get")
