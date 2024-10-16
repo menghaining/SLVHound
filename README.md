@@ -1,2 +1,2 @@
 # SLVHound
-A tool for checking authentication vulnerabilities
+A tool for checking session lingering vulnerabilities
