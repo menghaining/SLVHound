@@ -237,7 +237,7 @@ public class DBHelper {
 	}
 
 	/* --------------------spring DB---------------------------- */
-	boolean isSpringAction(String interf, String methodLowername, String action) {
+	public boolean isSpringAction(String interf, String methodLowername, String action) {
 		switch (action) {
 		case "save":
 			if (isSpringDBSave(interf, methodLowername))

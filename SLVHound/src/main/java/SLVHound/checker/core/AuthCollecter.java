@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,10 +13,16 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
-import com.ibm.wala.shrikeCT.AnnotationsReader.ElementValue;
+import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.annotations.Annotation;
+
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.ChatCompletion;
+import com.openai.models.ChatCompletionCreateParams;
+import com.openai.models.ChatModel;
 
 public class AuthCollecter {
 	static HashSet<CGNode> loginMtds = new HashSet<>();
@@ -29,8 +34,17 @@ public class AuthCollecter {
 	 * @param loginMtds   records candidate login methods
 	 * @param filterNodes records candidate filter methods
 	 */
-	public static void collectLoginsAndFilters(CallGraph cg) {
-		int login = 0, filter = 0;
+	public static void collectLoginsAndFilters(CallGraph cg, int flag) {
+		if (flag == 0) {
+			// invoke llm
+			LLM(cg);
+		} else {
+			// regex
+			Regex(cg);
+		}
+	}
+
+	private static void Regex(CallGraph cg) {
 		HashSet<String> entrySigs = new HashSet<>();
 		cg.getEntrypointNodes().forEach(node -> {
 			entrySigs.add(node.getMethod().getSignature());
@@ -44,23 +58,22 @@ public class AuthCollecter {
 			IMethod mtd = cgNode.getMethod();
 			if (mtd == null)
 				continue;
-
 			if (RepoInvokeInstsMap.containsKey(cgNode))
+				continue;
+			if (!entrySigs.contains(mtd.getSignature()))
 				continue;
 
 			String mtdName = mtd.getName().toString();
 
-			// is entry point
-			if (entrySigs.contains(mtd.getSignature())) {
-				// is login method
-//				if (mayLoginMethod_openai(mtd)) {
-				if (loginMethod(mtd)) {
-					loginMtds.add(cgNode);
-					login++;
-				}
+			// 1. is entry point
+			String regexLogin = "(?i)\\b\\w*(?:login|signin|authenticate)\\w*\\b";
+			Pattern pattern1 = Pattern.compile(regexLogin);
+			Matcher matcher1 = pattern1.matcher(mtd.getName().toString().toLowerCase());
+			if (matcher1.matches()) {
+				loginMtds.add(cgNode);
 			}
 
-			// filter / intercepter / callback
+			// 2. filter / intercepter / callback
 			IClass declareClass = mtd.getDeclaringClass();
 			for (String interf : ((BytecodeClass<?>) declareClass).getAllInterfaceNames()) {
 				// spring intercepter
@@ -69,7 +82,6 @@ public class AuthCollecter {
 					if (mtdName.toLowerCase().equals("prehandle")) {
 						System.out.println("[PrePROCESS] interceptor:" + mtd.getSignature());
 						filterNodes.add(cgNode);
-						filter++;
 						break;
 					}
 				}
@@ -77,7 +89,6 @@ public class AuthCollecter {
 					if (mtdName.equals("beforeHandshake")) {
 						System.out.println("[PrePROCESS] interceptor:" + mtd.getSignature());
 						filterNodes.add(cgNode);
-						filter++;
 						break;
 					}
 				// javaee filter
@@ -85,7 +96,6 @@ public class AuthCollecter {
 					if (mtdName.toLowerCase().equals("dofilter")) {
 						System.out.println("[PrePROCESS] filter:" + mtd.getSignature());
 						filterNodes.add(cgNode);
-						filter++;
 						break;
 					}
 
@@ -99,40 +109,61 @@ public class AuthCollecter {
 					if (mtdName.toLowerCase().equals("dofilterinternal")) {
 						System.out.println("[PrePROCESS] filter:" + mtd.getSignature());
 						filterNodes.add(cgNode);
-						filter++;
 						break;
 					}
 				}
-			if (mtd.getAnnotations() != null) {
-				for (Annotation anno : mtd.getAnnotations()) {
-					String annoname = anno.getType().getName().toString();
-					if (annoname.equals("Lcom/corundumstudio/socketio/annotation/OnConnect")
-							|| annoname.equals("Lcom/corundumstudio/socketio/annotation/OnEvent")) {
-						System.out.println("[PrePROCESS] callback:" + mtd.getSignature());
-						filterNodes.add(cgNode);
-						filter++;
-						break;
-					}
-				}
-			}
 		}
-		System.out.println("[login counts]" + login);
-		System.out.println("[filter counts]" + filter);
 	}
 
-	private static boolean loginMethod(IMethod mtd) {
+	private static void LLM(CallGraph cg) {
+		HashSet<String> entrySigs = new HashSet<>();
+		cg.getEntrypointNodes().forEach(node -> {
+			entrySigs.add(node.getMethod().getSignature());
+		});
+		Map<CGNode, Set<SSAInvokeInstruction>> RepoInvokeInstsMap = new HashMap<>();
 
-		// 1. common login function
-		if (mayCustomLoginMethod(mtd)) {
-			return true;
+		// Configures using the `OPENAI_API_KEY`, `OPENAI_ORG_ID` and
+		// `OPENAI_PROJECT_ID` environment variables
+		OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+		String sys = "You are an experienced and professional Java programmer with extensive experience in Web project development. Your task is to analyze Java code snippets and determine if they represent user login methods in a Java Web project.";
+		String user1 = "Analyze the following Java method and determine if it is a user login method in a Java Web project. Your response must be EXACTLY 'yes' or 'no', without any additional explanation or commentary. Here is the method code:";
+		String user2 = "Is the described function a web filter, interceptor, or pre-controller processing component, based on its purpose and execution timing within the framework conventions? Answer strictly 'yes' or 'no'.  Here is the method code:";
+		for (CGNode cgNode : cg) {
+			if (!cgNode.getMethod().getDeclaringClass().getClassLoader().getReference()
+					.equals(ClassLoaderReference.Application))
+				continue;
+			IMethod mtd = cgNode.getMethod();
+			if (mtd == null)
+				continue;
+			if (RepoInvokeInstsMap.containsKey(cgNode))
+				continue;
+			if (!entrySigs.contains(mtd.getSignature()))
+				continue;
+
+			String content = mtd.getSignature();
+			content += "{";
+			for (SSAInstruction inst : cgNode.getIR().getInstructions())
+				content += inst.toString() + ";";
+			content += "}";
+
+			// 1. login
+			ChatCompletionCreateParams params1 = ChatCompletionCreateParams.builder().addSystemMessage(sys)
+					.addUserMessage(user1 + content).model(ChatModel.GPT_4O).build();
+			ChatCompletion chatCompletion = client.chat().completions().create(params1);
+			String answer1 = chatCompletion.choices().get(0).message().toString().toLowerCase();
+			if (answer1.startsWith("yes")) {
+				loginMtds.add(cgNode);
+			}
+
+			// 2. filter
+			ChatCompletionCreateParams params2 = ChatCompletionCreateParams.builder().addSystemMessage(sys)
+					.addUserMessage(user2 + content).model(ChatModel.GPT_4O).build();
+			ChatCompletion chatCompletion2 = client.chat().completions().create(params2);
+			String answer2 = chatCompletion2.choices().get(0).message().toString().toLowerCase();
+			if (answer2.startsWith("yes")) {
+				filterNodes.add(cgNode);
+			}
 		}
-
-		// 2. may framework
-		if (mayFrameworkLogin(mtd)) {
-			return true;
-		}
-
-		return false;
 	}
 
 	public static boolean mayFrameworkLogin(IMethod mtd) {
@@ -173,50 +204,4 @@ public class AuthCollecter {
 		return false;
 	}
 
-	/** ask openAI for whether current mtd is login **/
-	private static boolean mayLoginMethod_openai(IMethod mtd) {
-		return openai_login(mtd);
-	}
-
-	private static boolean mayCustomLoginMethod(IMethod mtd) {
-		if (mtd.getName().toString().toLowerCase().startsWith("update")
-				|| mtd.getName().toString().toLowerCase().startsWith("set")
-				|| mtd.getName().toString().toLowerCase().startsWith("get")
-				|| mtd.getName().toString().toLowerCase().startsWith("save")
-				|| mtd.getName().toString().toLowerCase().startsWith("add")
-				|| mtd.getName().toString().toLowerCase().contains("delete")
-				|| mtd.getName().toString().toLowerCase().equals("init")
-				|| mtd.getName().toString().toLowerCase().equals("<init>"))
-			return false;
-		if (mtd.getName().toString().toLowerCase().contains("login"))
-			return true;
-
-		String regex = ".*(log.*in|sign.*in).*";
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(mtd.getName().toString().toLowerCase());
-		if (matcher.matches())
-			return true;
-
-		// annotations value
-		Collection<Annotation> annos = mtd.getAnnotations();
-		if (annos != null)
-			for (Annotation anno : annos) {
-				if (anno.toString().contains("Lio/swagger/v3/oas/annotations/Parameters"))
-					continue;
-				if (anno.getType().getName().toString().contains("AccessLogAnnotation"))
-					continue;
-				for (Entry<String, ElementValue> entry : anno.getNamedArguments().entrySet()) {
-					ElementValue eleVal = entry.getValue();
-					if (eleVal.toString().contains("login"))
-						return true;
-				}
-			}
-
-		return false;
-	}
-
-	private static boolean openai_login(IMethod mtd) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

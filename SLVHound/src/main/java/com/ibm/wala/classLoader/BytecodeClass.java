@@ -361,7 +361,6 @@ public abstract class BytecodeClass<T extends IClassLoader> implements IClass {
 	}
 
 	/**
-	 * added by mhn </br>
 	 * for find all infos about extends/implements when that are not loaded into
 	 * classloader</br>
 	 * 
@@ -392,10 +391,6 @@ public abstract class BytecodeClass<T extends IClassLoader> implements IClass {
 		return result;
 	}
 
-	/**
-	 * added by mhn </br>
-	 * 
-	 */
 	public Collection<String> getAllSuperClasses() {
 		Set<String> result = HashSetFactory.make();
 		if (!superclassComputed)

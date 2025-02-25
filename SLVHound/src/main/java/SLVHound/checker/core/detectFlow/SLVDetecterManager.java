@@ -10,6 +10,8 @@ import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.SSAInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 
+import SLVHound.checker.core.Util.RepoElement;
+
 public class SLVDetecterManager {
 	final ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> isg;
 	boolean isForward = true;
@@ -19,11 +21,14 @@ public class SLVDetecterManager {
 
 	CGNode ASOEntry;
 	HashSet<SSAInstruction> ASOs;
+	
+	 RepoElement authRepo;
 
-	public SLVDetecterManager(CallGraph cg, CGNode entry, HashSet<SSAInstruction> aSOs) {
+	public SLVDetecterManager(CallGraph cg, CGNode entry, HashSet<SSAInstruction> aSOs, RepoElement authRepo) {
 		this.cg = cg;
 		ASOEntry = entry;
 		ASOs = aSOs;
+		this.authRepo=authRepo;
 
 		isg = ICFGSupergraph.make(cg);
 		domain = new SLVDetecterFlowDomain<SLVDetecterDomainElement>(SLVDetecterDomainElement.ZERO);
@@ -60,5 +65,5 @@ public class SLVDetecterManager {
 	public HashSet<SSAInstruction> getASOs() {
 		return ASOs;
 	}
-
+	
 }

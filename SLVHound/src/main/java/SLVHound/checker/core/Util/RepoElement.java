@@ -11,11 +11,13 @@ import com.ibm.wala.types.FieldReference;
 import com.ibm.wala.types.TypeReference;
 
 public class RepoElement {
+	public static String frmk = "FRAMEWORK";
 	public static String shiro = "APACHESHIRO";
 	public static String springsecurity = "SPRINGSECURITY";
 	public static RepoElement shiroEle = new RepoElement(null, null, RepoElement.shiro, true, null);
 	public static RepoElement springSecurityEle = new RepoElement(null, null, RepoElement.springsecurity, true, null);
 	public static RepoElement JWT = new RepoElement(null, null, "JWT", true, null);
+	public static RepoElement frmkEle = new RepoElement(null, null, RepoElement.frmk, true, null);
 
 	public boolean inject = false;
 	public IClass belong2Class;
@@ -94,6 +96,12 @@ public class RepoElement {
 		return false;
 	}
 
+	public static HashSet<RepoElement> getFrameworkAuthRepos() {
+		HashSet<RepoElement> result = new HashSet<>();
+		result.addAll(getSpringSecurityAuthRepos());
+		result.addAll(getApacheShrioAuthRepos());
+		return result;
+	}
 	public static HashSet<RepoElement> getSpringSecurityAuthRepos() {
 		HashSet<RepoElement> result = new HashSet<>();
 

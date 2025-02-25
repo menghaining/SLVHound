@@ -12,6 +12,8 @@ import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 
+import SLVHound.checker.core.AuthenticationCheckModule;
+
 public class SLVDetecterFlowFunctions
 		implements IPartiallyBalancedFlowFunctions<BasicBlockInContext<IExplodedBasicBlock>> {
 	TabulationDomain<SLVDetecterDomainElement, BasicBlockInContext<IExplodedBasicBlock>> domain;
@@ -54,12 +56,6 @@ public class SLVDetecterFlowFunctions
 		return IdentityFlowFunction.identity();
 	}
 
-	String[] expires = { "com.fujieid.jap.core.context.JapAuthentication.logout",
-			"org.apache.shiro.subject.Subject.logout",
-			"org.springframework.web.context.request.ServletRequestAttributes.removeAttribute",
-			"javax.servlet.http.HttpSession.invalidate", "org.springframework.data.redis.core.HashOperations.delete",
-			"com.cskefu.cc.basic.auth.AuthRedisTemplate.delete" };
-
 	@Override
 	public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src,
 			BasicBlockInContext<IExplodedBasicBlock> dest) {
@@ -76,15 +72,24 @@ public class SLVDetecterFlowFunctions
 						SSAInstruction inst = src.getLastInstruction();
 						if (inst instanceof SSAInvokeInstruction) {
 							SSAInvokeInstruction invoke = (SSAInvokeInstruction) inst;
-							String tarSig = invoke.getDeclaredTarget().getSignature();
-							for (String expire : expires) {
-								if (tarSig.startsWith(expire)) {
-									SLVDetecterDomainElement ele = new SLVDetecterDomainElement(src.getNode(), inst,
-											SLVDetecterDomainType.expire);
-									int d = domain.add(ele);
-									result.add(d);
-									System.out.println("[add]" + src + "\n\t" + dest);
-								}
+							if (AuthenticationCheckModule.isExpireOp(invoke, src.getNode(), manager.authRepo)) {
+								SLVDetecterDomainElement ele = new SLVDetecterDomainElement(src.getNode(), inst,
+										SLVDetecterDomainType.expire);
+								int d = domain.add(ele);
+								result.add(d);
+							}
+						}
+					}
+				} else {
+					// gen ASO fact:
+					if (d1 == 0) {
+						SSAInstruction inst = src.getLastInstruction();
+						if (inst instanceof SSAInvokeInstruction) {
+							if (inst != null && manager.getASOs().contains(inst)) {
+								SLVDetecterDomainElement ele = new SLVDetecterDomainElement(src.getNode(), inst,
+										SLVDetecterDomainType.ASO);
+								int d = domain.add(ele);
+								result.add(d);
 							}
 						}
 					}
@@ -112,15 +117,24 @@ public class SLVDetecterFlowFunctions
 						SSAInstruction inst = src.getLastInstruction();
 						if (inst instanceof SSAInvokeInstruction) {
 							SSAInvokeInstruction invoke = (SSAInvokeInstruction) inst;
-							String tarSig = invoke.getDeclaredTarget().getSignature();
-							for (String expire : expires) {
-								if (tarSig.startsWith(expire)) {
-									SLVDetecterDomainElement ele = new SLVDetecterDomainElement(src.getNode(), inst,
-											SLVDetecterDomainType.expire);
-									int d = domain.add(ele);
-									result.add(d);
-									System.out.println("[add]" + src + "\n\t" + dest);
-								}
+							if (AuthenticationCheckModule.isExpireOp(invoke, src.getNode(), manager.authRepo)) {
+								SLVDetecterDomainElement ele = new SLVDetecterDomainElement(src.getNode(), inst,
+										SLVDetecterDomainType.expire);
+								int d = domain.add(ele);
+								result.add(d);
+							}
+						}
+					}
+				} else {
+					// gen ASO fact
+					if (d1 == 0) {
+						SSAInstruction inst = src.getLastInstruction();
+						if (inst instanceof SSAInvokeInstruction) {
+							if (inst != null && manager.getASOs().contains(inst)) {
+								SLVDetecterDomainElement ele = new SLVDetecterDomainElement(src.getNode(), inst,
+										SLVDetecterDomainType.ASO);
+								int d = domain.add(ele);
+								result.add(d);
 							}
 						}
 					}
