@@ -18,6 +18,7 @@ import SLVHound.checker.core.Util.UserVar;
 import SLVHound.checker.core.db.DBHelper;
 import SLVHound.checker.core.detectFlow.SLVDetecterFlowSolver;
 import SLVHound.checker.core.detectFlow.SLVDetecterManager;
+import SLVHound.checker.core.report.AnalysisReportWriter;
 
 public class SLVAnalyzer {
 	CallGraph cg;
@@ -84,6 +85,7 @@ public class SLVAnalyzer {
 				result.put(authtk, vulns);
 		}
 		long endDetectrTime = System.currentTimeMillis();
+		AnalysisReportWriter.write(app, result, auth2userMap.size(), endDetectrTime - startTime);
 		System.out.println("Total cost：" + ((double) (endDetectrTime - startTime) / 1000) + " seconds");
 	}
 
